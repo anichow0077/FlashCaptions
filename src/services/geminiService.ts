@@ -1,6 +1,13 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+// Initialize AI lazily or safely to prevent crash if key is missing on static deploy
+const getAI = () => {
+  const apiKey = process.env.GEMINI_API_KEY || "";
+  if (!apiKey) {
+    console.warn("GEMINI_API_KEY is missing. AI features will not work.");
+  }
+  return new GoogleGenAI({ apiKey });
+};
 
 export interface CaptionResult {
   captions: string[];
@@ -11,6 +18,12 @@ export async function generateCaptions(
   mimeType: string,
   userPrompt: string = ""
 ): Promise<string[]> {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error("No API key found. Please set your GEMINI_API_KEY in the environment.");
+  }
+
+  const ai = getAI();
   const mediaPart = {
     inlineData: {
       mimeType,
