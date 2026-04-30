@@ -250,17 +250,36 @@ export default function App() {
           <AnimatePresence>
             {captions.length > 0 && (
               <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
+                variants={{
+                  hidden: { opacity: 0 },
+                  show: {
+                    opacity: 1,
+                    transition: {
+                      staggerChildren: 0.15
+                    }
+                  }
+                }}
+                initial="hidden"
+                animate="show"
                 className="space-y-4"
               >
                 <h3 className="text-xl font-bold uppercase tracking-widest text-gray-400 mb-2">Options</h3>
                 {captions.map((caption, idx) => (
                   <motion.div
                     key={idx}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.1 }}
+                    variants={{
+                      hidden: { opacity: 0, y: 30, scale: 0.95 },
+                      show: { 
+                        opacity: 1, 
+                        y: 0, 
+                        scale: 1,
+                        transition: {
+                          type: "spring",
+                          stiffness: 100,
+                          damping: 15
+                        }
+                      }
+                    }}
                     className="group bg-white p-6 md:p-8 rounded-3xl border-2 border-gray-50 shadow-sm hover:border-orange-200 transition-all cursor-default"
                   >
                     <p className="text-2xl md:text-3xl leading-relaxed mb-6 font-medium">
